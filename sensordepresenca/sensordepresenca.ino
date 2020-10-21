@@ -7,7 +7,7 @@
 * 21/10/2020
 */
 const int pinoPIR = 19; //PINO DIGITAL UTILIZADO PELO SENSOR DE PRESENÇA
-const int pinoLED = 20; //PINO DIGITAL UTILIZADO PELO LED
+const int pinoLED = 21; //PINO DIGITAL UTILIZADO PELO LED
  
 void setup(){
   pinMode(pinoLED, OUTPUT); //DEFINE O PINO COMO SAÍDA
