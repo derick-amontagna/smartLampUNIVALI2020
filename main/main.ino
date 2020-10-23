@@ -9,7 +9,7 @@
 
 //Sensor de luz com LDR
 
-#define lenPin 19; //Pino digital para o LED
+#define ledPin 21; //Pino digital para o LED
 #define ldrPin = 35; //Pino analogico para o LDR
 #define pinoPIR = 19; //Pino digital para o sensor de presença
 
