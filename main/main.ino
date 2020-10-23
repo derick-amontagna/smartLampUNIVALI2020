@@ -16,7 +16,9 @@
 #define pinoPIR 19 //Pino digital para o sensor de presença
 
 int ldrValor = 0; //Valor lido do LDR
+int randNumber = 0;
 int statusLed = 0;
+int modoSelecionado = 0;
 
 /** Estas são as declarações relacionadas ao CircusESP32Lib**/
 char ssid[] = "GVT-A6E1";                         
@@ -32,7 +34,8 @@ CircusESP32Lib circusESP32(server,ssid,password); // O objeto que representa um 
 /// Funções
 void modoInteligente()
 {
-  if ((ldrValor>= 1500) && (digitalRead(pinoPIR) == HIGH)){
+  ldrValor = analogRead(ldrPin);
+  if ((ldrValor>= 900) && (digitalRead(pinoPIR) == HIGH)){
     statusLed = 1;
     circusESP32.write(statusDoLed_key,statusLed,token);
     digitalWrite(ledPin, HIGH);
@@ -46,8 +49,9 @@ void modoInteligente()
 
 void modoFerias()
 {
-  int randNumber = random(10, 100); // Numero aleatorio entre 10 e 99
-  if (ldrValor>= 1500 &&  randNumber >= 50) 
+  ldrValor = analogRead(ldrPin);
+  randNumber = random(10, 100); // Numero aleatorio entre 10 e 99
+  if (ldrValor>= 900 && randNumber >= 50) 
   {
     statusLed = 1;
     circusESP32.write(statusDoLed_key,statusLed,token);
@@ -74,6 +78,7 @@ void modoManual()
   else 
   {
     digitalWrite(ledPin, LOW);
+    statusLed = 0;
     circusESP32.write(statusDoLed_key,statusLed,token);
   }
 }
@@ -91,7 +96,7 @@ void setup()
 
 void loop() 
 {
-  int modoSelecionado = circusESP32.read(modos_key, token);
+  modoSelecionado = circusESP32.read(modos_key, token);
   if (modoSelecionado == 0) modoInteligente();
   else if (modoSelecionado == 1) modoFerias();
   else modoManual();

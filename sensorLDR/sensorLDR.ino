@@ -9,7 +9,7 @@
 
 //Sensor de luz com LDR
  
-const int ledPin = 19; //Led no pino 7
+const int ledPin = 21; //Led no pino 7
 const int ldrPin = 35; //LDR no pino analígico 8
 int ldrValor = 0; //Valor lido do LDR
  
@@ -23,7 +23,7 @@ void loop() {
  ///ler o valor do LDR
  ldrValor = analogRead(ldrPin); //O valor lido será entre 0 e 1023
  //se o valor lido for maior ou igual que 1500, liga o led
- if (ldrValor>= 1500) digitalWrite(ledPin,HIGH);
+ if (ldrValor >= 900) digitalWrite(ledPin,HIGH);
  // senão, apaga o led
  else digitalWrite(ledPin,LOW);
  delay(100);
