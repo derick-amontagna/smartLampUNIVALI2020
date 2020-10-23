@@ -27,7 +27,8 @@ char token[] = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIyMTU5In0.oldlOloegRoX_4FjidV5uoS
 char server[] = "www.circusofthings.com";
 char statusDoLed_key[] = "18454";                           
 char modos_key [] = "26204";    
-char ligDes_key[] = "1476";                                            
+char ligDes_key[] = "1476";
+char randNumber_key[] = "8819";                                            
 CircusESP32Lib circusESP32(server,ssid,password); // O objeto que representa um ESP32 para você poder solicitar gravação ou leitura
 
 
@@ -51,6 +52,7 @@ void modoFerias()
 {
   ldrValor = analogRead(ldrPin);
   randNumber = random(10, 100); // Numero aleatorio entre 10 e 99
+  circusESP32.write(randNumber_key,randNumber,token);
   if (ldrValor>= 900 && randNumber >= 50) 
   {
     statusLed = 1;
