@@ -65,6 +65,7 @@ void modoFerias()
     statusLed = 0;
     circusESP32.write(statusDoLed_key,statusLed,token);
     digitalWrite(ledPin, LOW);
+    digitalWrite(ledPin2, LOW);
   }
 }
 
