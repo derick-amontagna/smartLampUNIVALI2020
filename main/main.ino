@@ -1,5 +1,3 @@
-
-
 /*
 * Lampada Inteligente
 * Derick Abreu Montagna e Edmiel Loiola de Oliveira 
@@ -12,53 +10,78 @@
 // Bibliotecas
 #include <CircusESP32Lib.h>
 
-
 // Definindo constante 
 #define ledPin 21 //Pino digital para o LED
 #define ldrPin 35 //Pino analogico para o LDR
 #define pinoPIR 19 //Pino digital para o sensor de presença
 
 int ldrValor = 0; //Valor lido do LDR
-
+int statusLed = 0;
 /** Estas são as declarações relacionadas ao CircusESP32Lib**/
 char ssid[] = "GVT-A6E1";                         
 char password[] = "1965002410";                   
 char token[] = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIyMTU5In0.oldlOloegRoX_4FjidV5uoSQN1uCvKHnsBNZhkP0m2g";                               
 char server[] = "www.circusofthings.com";
-char estadoDoLed_key[] = "18454";                           
-char LDR_key [] = "11910";                        
-char sensorDePresenca_key [] = "16510";                        
+char statusDoLed_key[] = "18454";                           
+char modos_key [] = "26204";    
+char ligDes_key[] = "1476";                                            
 CircusESP32Lib circusESP32(server,ssid,password); // O objeto que representa um ESP32 para você poder solicitar gravação ou leitura
 
 /// Funções
-//Sensores
-void verificandoLDR()
+void modoInteligente()
 {
-
- ldrValor = analogRead(ldrPin); //O valor lido será entre 0 e 1023
- 
- //se o valor lido for maior ou igual que 1500, liga o led
- if (ldrValor>= 1500) digitalWrite(ledPin,HIGH);
- else digitalWrite(ledPin,LOW);
-  
+  if (ldrValor>= 1500 &&  digitalRead(pinoPIR) == HIGH) {
+    statusLed = 1;
+    circusESP32.write(statusDoLed_key,statusLed,token);
+    digitalWrite(ledPin, HIGH);
+  }
+  else {
+    statusLed = 0;
+    circusESP32.write(statusDoLed_key,statusLed,token);
+    digitalWrite(ledPin, LOW);
+  }
 }
 
-void verificandoPresenca()
+void modoFerias()
 {
+  int randNumber = random(10, 100); // Numero aleatorio entre 10 e 99
+  if (ldrValor>= 1500 &&  randNumber >= 50) 
+  {
+    statusLed = 1;
+    circusESP32.write(statusDoLed_key,statusLed,token);
+    digitalWrite(ledPin, HIGH);
+    delay(3000);
+  }
+  else 
+  {
+    statusLed = 0;
+    circusESP32.write(statusDoLed_key,statusLed,token);
+    digitalWrite(ledPin, LOW);
+  }
+}
 
- if(digitalRead(pinoPIR) == HIGH) digitalWrite(ledPin, HIGH); 
- else digitalWrite(ledPin, LOW); //APAGA O LED
-  
+void modoManual()
+{
+  double dashboard_order = circusESP32.read(ligDes_key, token);
+  if (dashboard_order == 1) 
+  {
+    digitalWrite(ledPin, HIGH);
+    statusLed = 1;
+    circusESP32.write(statusDoLed_key,statusLed,token);
+  }
+  else 
+  {
+    digitalWrite(ledPin, LOW);
+    circusESP32.write(statusDoLed_key,statusLed,token);
+  }
 }
 
 
- 
 void setup() 
 {
  pinMode(ledPin,OUTPUT); //define a ledPin como saída
  pinMode(ldrPin,INPUT); //define a ldrPin como saída
- pinMode(pinoPIR, INPUT); //DEFINE O PINO COMO ENTRADA
-  
+ pinMode(pinoPIR, INPUT); //define o pinoPIR como saida
  Serial.begin(115200); //Inicia a comunicação serial
  circusESP32.begin(); // Deixe o objeto Circuis configurar-se para uma conexão SSL / Secure
 }
@@ -66,7 +89,8 @@ void setup()
 
 void loop() 
 {
-
-  double dashboard_order = circusESP32.write(estadoDoLed_key, token);
-
+  int modoSelecionado = circusESP32.read(modos_key, token);
+  if (modoSelecionado == 0) modoInteligente();
+  else if (modoSelecionado == 1) modoFerias();
+  else modoManual();
 }
