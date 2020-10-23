@@ -17,6 +17,7 @@
 
 int ldrValor = 0; //Valor lido do LDR
 int statusLed = 0;
+
 /** Estas são as declarações relacionadas ao CircusESP32Lib**/
 char ssid[] = "GVT-A6E1";                         
 char password[] = "1965002410";                   
@@ -27,10 +28,11 @@ char modos_key [] = "26204";
 char ligDes_key[] = "1476";                                            
 CircusESP32Lib circusESP32(server,ssid,password); // O objeto que representa um ESP32 para você poder solicitar gravação ou leitura
 
+
 /// Funções
 void modoInteligente()
 {
-  if (ldrValor>= 1500 &&  digitalRead(pinoPIR) == HIGH) {
+  if ((ldrValor>= 1500) && (digitalRead(pinoPIR) == HIGH)){
     statusLed = 1;
     circusESP32.write(statusDoLed_key,statusLed,token);
     digitalWrite(ledPin, HIGH);
