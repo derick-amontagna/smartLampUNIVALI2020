@@ -1,3 +1,5 @@
+
+
 /*
 * Lampada Inteligente
 * Derick Abreu Montagna e Edmiel Loiola de Oliveira 
@@ -7,24 +9,29 @@
 * 21/10/2020
 */
 
-//Sensor de luz com LDR
+// Bibliotecas
+#include <CircusESP32Lib.h>
 
+
+// Definindo constante 
 #define ledPin 21 //Pino digital para o LED
 #define ldrPin 35 //Pino analogico para o LDR
 #define pinoPIR 19 //Pino digital para o sensor de presença
 
 int ldrValor = 0; //Valor lido do LDR
 
- 
-void setup() 
-{
- pinMode(ledPin,OUTPUT); //define a ledPin como saída
- pinMode(ldrPin,INPUT); //define a ldrPin como saída
- pinMode(pinoPIR, INPUT); //DEFINE O PINO COMO ENTRADA
-  
- Serial.begin(115200); //Inicia a comunicação serial
-}
+/** Estas são as declarações relacionadas ao CircusESP32Lib**/
+char ssid[] = "GVT-A6E1";                         
+char password[] = "1965002410";                   
+char token[] = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIyMTU5In0.oldlOloegRoX_4FjidV5uoSQN1uCvKHnsBNZhkP0m2g";                               
+char server[] = "www.circusofthings.com";
+char estadoDoLed_key[] = "18454";                           
+char LDR_key [] = "11910";                        
+char sensorDePresenca_key [] = "16510";                        
+CircusESP32Lib circusESP32(server,ssid,password); // O objeto que representa um ESP32 para você poder solicitar gravação ou leitura
 
+/// Funções
+//Sensores
 void verificandoLDR()
 {
 
@@ -44,8 +51,22 @@ void verificandoPresenca()
   
 }
 
+
+ 
+void setup() 
+{
+ pinMode(ledPin,OUTPUT); //define a ledPin como saída
+ pinMode(ldrPin,INPUT); //define a ldrPin como saída
+ pinMode(pinoPIR, INPUT); //DEFINE O PINO COMO ENTRADA
+  
+ Serial.begin(115200); //Inicia a comunicação serial
+ circusESP32.begin(); // Deixe o objeto Circuis configurar-se para uma conexão SSL / Secure
+}
+
+
 void loop() 
 {
-  
+
+  double dashboard_order = circusESP32.write(estadoDoLed_key, token);
 
 }
