@@ -7,12 +7,12 @@
 * 21/10/2020
 */
 
-// Bibliotecas
+/// Bibliotecas
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <BlynkSimpleEsp32.h>
 
-// Definindo constante 
+/// Definindo constante 
 #define ledPin 21 //Pino digital para o LED
 #define ldrPin 35 //Pino analogico para o LDR
 #define pinoPIR 19 //Pino digital para o sensor de presença
@@ -23,12 +23,12 @@ int ldrValor = 0; //Valor lido do LDR
 int randNumber = 0;
 int manual_order = 0;
 
-/** Estas são as declarações relacionadas ao the Blynk App**/
+/// Estas são as declarações relacionadas ao the Blynk App
 char auth[] = "_qtOUSD-l2L7iMNt5x955DfegMSkXSEi";
 char ssid[] = "GVT-A6E1";                         
 char pass[] = "1965002410";                   
 
-/// Configurando portas virtuais Blynk App
+// Configurando portas virtuais Blynk App
 BLYNK_CONNECTED(){
   Blynk.syncAll();
 }
@@ -60,9 +60,9 @@ BLYNK_WRITE(V3){
 
 /// Funções
 void modoInteligente(){
-  ldrValor = analogRead(ldrPin);
-  Blynk.virtualWrite(V4, ldrValor);
-  Blynk.virtualWrite(V5, digitalRead(pinoPIR));
+  ldrValor = analogRead(ldrPin); // Valor entre 0 e 4095
+  Blynk.virtualWrite(V4, ldrValor); 
+  Blynk.virtualWrite(V5, digitalRead(pinoPIR)); // Delay entre medições, pode ir de 5 - 300 segundos / O alcance de detecção pode ir 3 a 7 metros / Ajustado manualmente no sensor
   if ((ldrValor>= 1600) && (digitalRead(pinoPIR) == HIGH)){
     statusLed.on();
     digitalWrite(ledPin, HIGH);
@@ -74,7 +74,7 @@ void modoInteligente(){
 }
 
 void modoFerias(){
-  ldrValor = analogRead(ldrPin);
+  ldrValor = analogRead(ldrPin); // Valor entre 0 e 4095
   Blynk.virtualWrite(V4, ldrValor);
   randNumber = random(0, 100); // Numero aleatorio entre 0 e 99
   Blynk.virtualWrite(V2, randNumber);
@@ -105,7 +105,7 @@ void modoManual(){
     }
 }
 
-
+/// Programa principal
 void setup() {
  pinMode(ledPin,OUTPUT); //define a ledPin como saída
  pinMode(ldrPin,INPUT); //define a ldrPin como saída
@@ -115,5 +115,5 @@ void setup() {
 }
 
 void loop(){
-  Blynk.run(); 
+  Blynk.run(); // Para o App se comunicar a todo instante
 }
