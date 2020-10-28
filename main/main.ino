@@ -29,31 +29,41 @@ char ssid[] = "GVT-A6E1";
 char pass[] = "1965002410";                   
 
 /// Configurando portas virtuais Blynk App
+BLYNK_CONNECTED(){
+  Blynk.syncAll();
+}
+
 BLYNK_WRITE(V1){
   switch (param.asInt()){
     case 1: {
       modoInteligente();
+      Blynk.syncVirtual(V1);
       break;
     }
     case 2:{
       modoFerias();
+      Blynk.syncVirtual(V1);
       break;
     }
     case 3:{
       modoManual();
+      Blynk.syncVirtual(V1);
       break;
     }
   }
 }
 
 BLYNK_WRITE(V3){
-    manual_order = param.asInt(); 
+    manual_order = param.asInt();
+    Blynk.syncVirtual(V3); 
 }
 
 /// Funções
 void modoInteligente(){
   ldrValor = analogRead(ldrPin);
-  if ((ldrValor>= 900) && (digitalRead(pinoPIR) == HIGH)){
+  Blynk.virtualWrite(V4, ldrValor);
+  Blynk.virtualWrite(V5, digitalRead(pinoPIR));
+  if ((ldrValor>= 1600) && (digitalRead(pinoPIR) == HIGH)){
     statusLed.on();
     digitalWrite(ledPin, HIGH);
   }
@@ -65,20 +75,26 @@ void modoInteligente(){
 
 void modoFerias(){
   ldrValor = analogRead(ldrPin);
-  randNumber = random(10, 100); // Numero aleatorio entre 10 e 99
+  Blynk.virtualWrite(V4, ldrValor);
+  randNumber = random(0, 100); // Numero aleatorio entre 0 e 99
   Blynk.virtualWrite(V2, randNumber);
-  if (ldrValor>= 900 && randNumber >= 50){
-    statusLed.on();
-    digitalWrite(ledPin, HIGH);
-    delay(3000);
+  if (ldrValor>= 1600 && randNumber >= 90){
+    if(digitalRead(ledPin) == LOW){
+      statusLed.on();
+      digitalWrite(ledPin, HIGH); 
+    }
+    else{
+      statusLed.off();
+      digitalWrite(ledPin, LOW);
+    }
   }
-  else {
-    statusLed.off();
+  else if (ldrValor <= 1600){
     digitalWrite(ledPin, LOW);
   }
 }
 
 void modoManual(){
+  Blynk.syncVirtual(V3); 
   if (manual_order == 1) {
       statusLed.on();
       digitalWrite(ledPin, HIGH);
