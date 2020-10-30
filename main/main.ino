@@ -7,18 +7,10 @@
 * 21/10/2020
 */
 
-/// Bibliotecas
-#include <WiFi.h>
-#include <WiFiClient.h>
-#include <BlynkSimpleEsp32.h>
+/// Biblioteca
+#include "matriz.h"
 
-/// Definindo constante 
-#define ledPin 21 //Pino digital para o LED
-#define ldrPin 35 //Pino analogico para o LDR
-#define pinoPIR 19 //Pino digital para o sensor de presença
-#define BLYNK_PRINT Serial
-WidgetLED statusLed(V0);
-
+///Definindo Valores
 int ldrValor = 0; //Valor lido do LDR
 int randNumber = 0;
 int manual_order = 0;
@@ -26,9 +18,11 @@ int manual_order = 0;
 /// Estas são as declarações relacionadas ao the Blynk App
 char auth[] = "_qtOUSD-l2L7iMNt5x955DfegMSkXSEi";
 char ssid[] = "GVT-A6E1";                         
-char pass[] = "1965002410";                   
+char pass[] = "1965002410";
 
-// Configurando portas virtuais Blynk App
+/// Configurando portas virtuais Blynk App
+WidgetLED statusLed(V0);
+
 BLYNK_CONNECTED(){
   Blynk.syncAll();
 }
